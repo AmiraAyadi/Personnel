@@ -4,6 +4,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from email.mime.base import MIMEBase
+from email import encoders
 
 
 
@@ -24,28 +26,33 @@ for i,j in (zip(liste_nom,liste_mail)):
 	print(i,j)
 
 ob=input("Quel est l'objet ? \n")
+
 for i in range(numero):
 
     msg = MIMEMultipart()
     
-    pdfAttachment = MIMEApplication("C:/Users/Amira AYADI/Desktop/CV-Imène-AYADI.pdf", _subtype = "pdf")
-    pdfAttachment.add_header('content-disposition', 'attachment', filename = ('CV-Imène-AYADI.pdf'))
-    text = MIMEMultipart('alternative')
-    text.attach(MIMEText(u"""Bonjour %s,
+    msg.attach(MIMEText(u"""
+Bonjour %s,
 
-            Je me permets de vous faire parvenir mon CV dans le cas où vous seriez à la recherche d’une assistante mise en scene.
-            Je trouve les candidatures spontanées assez intrusives et très peu fructueuses mais c'est essentiellement grâce à ce genre de mail que je suis engagée si je tombe au bon moment :) 
+Je me permets de vous faire parvenir mon CV dans le cas où vous seriez à la recherche d’une assistante mise en scene.
+    
+Je trouve les candidatures spontanées assez intrusives et très peu fructueuses mais c'est essentiellement grâce à ce genre de mail que je suis engagée si je tombe au bon moment :) 
 
-            Je suis une jeune femme extremement efficace, reactive et motivée et je serai ravie de vous rencontrer dans le  cadre d’un entretien.
+Je suis une jeune femme extremement efficace, reactive et motivée et je serai ravie de vous rencontrer dans le  cadre d’un entretien.
 
-            Bien à vous, 
-            Imène AYADI
-            0781956633
+Bien à vous, 
+Imène AYADI
+0781956633
 
     """ % str(liste_nom[i]), "plain", _charset="utf-8"))
-    msg = MIMEMultipart('mixed')
-    msg.attach(text)
-    msg.attach(pdfAttachment)
+    filename="CV_Imene_AYADI.pdf"
+    attachment=open("C:/Users/Amira AYADI/Desktop/CV (2).pdf","rb")
+    part = MIMEBase('application', 'octet-stream')
+    part.set_payload((attachment).read())
+    encoders.encode_base64(part)
+    part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+
+    msg.attach(part)
 
    
     msg['Subject'] = ob
